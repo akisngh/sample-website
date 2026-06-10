@@ -229,3 +229,43 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ===== About ===== */
+.about-section {
+  padding: var(--section-padding);
+  background: var(--bg-light);
+}
+
+.about-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.about-text p {
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  font-size: 17px;
+}
+
+.about-text p:last-child {
+  margin-bottom: 0;
+}
+
+.about-image-placeholder {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--card-radius);
+  background: var(--gradient-primary);
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .about-content {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
