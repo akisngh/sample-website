@@ -548,3 +548,137 @@
     justify-content: center;
   }
 }
+
+/* ===== Navbar Active Link ===== */
+.nav-active {
+  color: var(--purple) !important;
+  font-weight: 700;
+}
+
+/* ===== Bridge Test Page ===== */
+.bridge-section {
+  min-height: 100vh;
+  padding: 120px 24px 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-light);
+}
+
+.bridge-container {
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+}
+
+.bridge-container h1 {
+  font-size: 36px;
+  margin-bottom: 8px;
+}
+
+.bridge-subtitle {
+  color: var(--text-muted);
+  margin-bottom: 40px;
+}
+
+.bridge-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.bridge-btn {
+  padding: 16px 24px;
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  border-radius: 12px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.bridge-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.bridge-btn:active {
+  transform: translateY(0);
+}
+
+.bridge-btn.green {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+.bridge-btn.red {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.bridge-btn.purple {
+  background: var(--gradient-primary);
+}
+
+.bridge-btn.orange {
+  background: linear-gradient(135deg, #f59e0b, #ea580c);
+}
+
+.bridge-btn.teal {
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
+}
+
+.bridge-log {
+  margin-top: 40px;
+  text-align: left;
+}
+
+.bridge-log h3 {
+  margin-bottom: 12px;
+  font-size: 18px;
+}
+
+.bridge-log-entries {
+  background: var(--bg-white);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+}
+
+.bridge-log-entry {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bridge-log-entry:last-child {
+  border-bottom: none;
+}
+
+.log-time {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.log-action {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.log-result {
+  font-size: 13px;
+  background: var(--bg-light);
+  padding: 4px 8px;
+  border-radius: 4px;
+  word-break: break-all;
+  font-family: var(--font-mono);
+}
+
+@media (max-width: 768px) {
+  .bridge-section {
+    padding: 100px 16px 64px;
+  }
+
+  .bridge-container h1 {
+    font-size: 28px;
+  }
+}
