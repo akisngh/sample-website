@@ -1,10 +1,11 @@
 import Navbar from './components/Navbar'
+import Hero from './components/Hero'
 
 function App() {
   return (
     <div className="app">
       <Navbar />
-      <p style={{ paddingTop: '80px' }}>MPL Gaming — coming soon</p>
+      <Hero />
     </div>
   )
 }
