@@ -41,6 +41,12 @@ function BridgeTest() {
     addLog('deepLink("AddMoney")', '{"type":"DEEP_LINK","payload":{"action":"OPEN_DEEP_LINK","actionParams":{"actionType":"nav","actionPayload":{"route":"AddMoney","param":{}}}}}')
   }
 
+  function handleReload() {
+    const url = 'https://akisngh.github.io/sample-website/'
+    Bridge.reload(url)
+    addLog('reload()', '{"type":"RELOAD","payload":{"url":"' + url + '"}}')
+  }
+
   function handleCheckNative() {
     const result = Bridge.isNative()
     addLog('isNative()', String(result))
@@ -58,6 +64,7 @@ function BridgeTest() {
           <button className="bridge-btn purple" onClick={handleGameWon}>Game Won</button>
           <button className="bridge-btn orange" onClick={handleGameLost}>Game Lost</button>
           <button className="bridge-btn blue" onClick={handleDeepLink}>Deep Link</button>
+          <button className="bridge-btn cyan" onClick={handleReload}>Reload</button>
           <button className="bridge-btn teal" onClick={handleCheckNative}>Check Native</button>
         </div>
 

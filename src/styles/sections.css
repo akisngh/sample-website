@@ -629,6 +629,10 @@
   background: linear-gradient(135deg, #3b82f6, #2563eb);
 }
 
+.bridge-btn.cyan {
+  background: linear-gradient(135deg, #06b6d4, #0891b2);
+}
+
 .bridge-btn.teal {
   background: linear-gradient(135deg, #14b8a6, #0d9488);
 }

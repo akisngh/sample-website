@@ -47,6 +47,7 @@
     GAME_STARTED: "GAME_STARTED",
     INSTRUMENTATION: "INSTRUMENTATION",
     DEEP_LINK: "DEEP_LINK",
+    RELOAD: "RELOAD",
   };
 
   /**
@@ -162,6 +163,14 @@
           },
         },
       });
+    },
+
+    /**
+     * RELOAD — ask native to reload the WebView with a new URL.
+     * @param {string} url  The URL to load.
+     */
+    reload: function (url) {
+      send(BridgeType.RELOAD, { url: url });
     },
 
     /**
