@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
-import Bridge from '../bridge.js'
+import '../bridge.js'
+
+const Bridge = window.Bridge
 
 function BridgeTest() {
   const [log, setLog] = useState([])
