@@ -29,8 +29,8 @@ function BridgeTest() {
   }
 
   function handleDeepLink() {
-    Bridge.deepLink('RummyGameList', { deepLinkGameId: 1000215, screenName: 'LEADERBOARD' })
-    addLog('deepLink("RummyGameList")', '{"type":"DEEP_LINK","payload":{"action":"OPEN_DEEP_LINK","actionParams":{"actionType":"nav","actionPayload":{"route":"RummyGameList","param":{"deepLinkGameId":1000215,"screenName":"LEADERBOARD"}}}}}')
+    Bridge.deepLink('AddMoney', {})
+    addLog('deepLink("AddMoney")', '{"type":"DEEP_LINK","payload":{"action":"OPEN_DEEP_LINK","actionParams":{"actionType":"nav","actionPayload":{"route":"AddMoney","param":{}}}}}')
   }
 
   function handleCheckNative() {
