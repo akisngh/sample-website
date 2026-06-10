@@ -17,6 +17,7 @@
  *   CLOSE_GAME       - no payload
  *   GAME_STARTED     - no payload
  *   INSTRUMENTATION  - payload: { name: string, properties: object }
+ *   DEEP_LINK        - payload: { action: string, actionParams: object }
  *
  * Usage (ES module):
  *   import Bridge from "./bridge.js";
@@ -45,6 +46,7 @@
     CLOSE_GAME: "CLOSE_GAME",
     GAME_STARTED: "GAME_STARTED",
     INSTRUMENTATION: "INSTRUMENTATION",
+    DEEP_LINK: "DEEP_LINK",
   };
 
   /**
@@ -141,6 +143,24 @@
       send(BridgeType.INSTRUMENTATION, {
         name: name,
         properties: properties || {},
+      });
+    },
+
+    /**
+     * DEEP_LINK — ask native to open a deep link.
+     * @param {string} route       Target route, e.g. "RummyGameList".
+     * @param {object} [params]    Route parameters.
+     */
+    deepLink: function (route, params) {
+      send(BridgeType.DEEP_LINK, {
+        action: "OPEN_DEEP_LINK",
+        actionParams: {
+          actionType: "nav",
+          actionPayload: {
+            route: route,
+            param: params || {},
+          },
+        },
       });
     },
 

@@ -28,6 +28,11 @@ function BridgeTest() {
     addLog('instrumentation("game_lost")', '{"type":"INSTRUMENTATION","payload":{"name":"game_lost","properties":{"amount":0,"isHof":false}}}')
   }
 
+  function handleDeepLink() {
+    Bridge.deepLink('RummyGameList', { deepLinkGameId: 1000215, screenName: 'LEADERBOARD' })
+    addLog('deepLink("RummyGameList")', '{"type":"DEEP_LINK","payload":{"action":"OPEN_DEEP_LINK","actionParams":{"actionType":"nav","actionPayload":{"route":"RummyGameList","param":{"deepLinkGameId":1000215,"screenName":"LEADERBOARD"}}}}}')
+  }
+
   function handleCheckNative() {
     const result = Bridge.isNative()
     addLog('isNative()', String(result))
@@ -44,6 +49,7 @@ function BridgeTest() {
           <button className="bridge-btn red" onClick={handleCloseGame}>Close Game</button>
           <button className="bridge-btn purple" onClick={handleGameWon}>Game Won</button>
           <button className="bridge-btn orange" onClick={handleGameLost}>Game Lost</button>
+          <button className="bridge-btn blue" onClick={handleDeepLink}>Deep Link</button>
           <button className="bridge-btn teal" onClick={handleCheckNative}>Check Native</button>
         </div>
 
