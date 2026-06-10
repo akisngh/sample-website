@@ -1,0 +1,41 @@
+const features = [
+  {
+    emoji: '\u{1F3C6}',
+    title: 'Tournaments',
+    description: 'Compete in daily tournaments across multiple games and win exciting prizes.',
+  },
+  {
+    emoji: '\u{1F3AE}',
+    title: 'Live Streaming',
+    description: 'Watch and stream live gameplay with your favorite gamers.',
+  },
+  {
+    emoji: '\u{1F465}',
+    title: 'Community',
+    description: 'Connect with millions of gamers, form teams, and make friends.',
+  },
+  {
+    emoji: '\u{2B50}',
+    title: 'Rewards',
+    description: 'Earn points, unlock achievements, and redeem exclusive rewards.',
+  },
+]
+
+function Features() {
+  return (
+    <section id="features" className="features-section">
+      <h2 className="section-title">What We Offer</h2>
+      <div className="features-grid">
+        {features.map((feature) => (
+          <div className="feature-card" key={feature.title}>
+            <span className="feature-emoji">{feature.emoji}</span>
+            <h3>{feature.title}</h3>
+            <p>{feature.description}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+export default Features
