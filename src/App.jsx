@@ -1,7 +1,10 @@
+import Navbar from './components/Navbar'
+
 function App() {
   return (
     <div className="app">
-      <p>MPL Gaming — coming soon</p>
+      <Navbar />
+      <p style={{ paddingTop: '80px' }}>MPL Gaming — coming soon</p>
     </div>
   )
 }
