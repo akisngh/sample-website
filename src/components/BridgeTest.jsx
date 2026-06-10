@@ -1,8 +1,16 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Bridge from '../bridge.js'
 
 function BridgeTest() {
   const [log, setLog] = useState([])
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      Bridge.gameStarted()
+      setLog((prev) => [...prev, { action: 'gameStarted() [auto]', result: '{"type":"GAME_STARTED"}', time: new Date().toLocaleTimeString() }])
+    }, 5000)
+    return () => clearTimeout(timer)
+  }, [])
 
   function addLog(action, result) {
     setLog((prev) => [...prev, { action, result, time: new Date().toLocaleTimeString() }])
