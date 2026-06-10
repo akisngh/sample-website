@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import Features from './components/Features'
@@ -13,7 +13,16 @@ import FeaturePage from './components/FeaturePage'
 function App() {
   const [page, setPage] = useState('home')
 
+  useEffect(() => {
+    function handlePopState(e) {
+      setPage(e.state?.page || 'home')
+    }
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
+
   function navigateTo(p) {
+    window.history.pushState({ page: p }, '', '')
     setPage(p)
     window.scrollTo(0, 0)
   }
