@@ -120,6 +120,12 @@
     }
   }
 
+  /**
+   * Listeners for native -> web responses.
+   * Native calls: window.Bridge.onNativeResponse({ type: "...", payload: {...} })
+   */
+  var _listeners = [];
+
   var Bridge = {
     /** Expose the type constants for callers that want them. */
     Type: BridgeType,
@@ -190,6 +196,31 @@
      */
     writeKey: function (key, value) {
       send(BridgeType.WRITE_KEY, { key: key, value: value });
+    },
+
+    /**
+     * Called by native via evaluateJavascript:
+     *   window.Bridge.onNativeResponse({"type":"READ_KEY_RESPONSE","payload":{...}})
+     *
+     * @param {object|string} response  The response object (or JSON string).
+     */
+    onNativeResponse: function (response) {
+      var parsed = typeof response === "string" ? JSON.parse(response) : response;
+      console.log("[bridge] native response:", parsed);
+      for (var i = 0; i < _listeners.length; i++) {
+        try { _listeners[i](parsed); } catch (e) { console.error("[bridge] listener error:", e); }
+      }
+    },
+
+    /**
+     * Subscribe to native responses. Returns an unsubscribe function.
+     * @param {function} fn  Called with the parsed response object.
+     */
+    onResponse: function (fn) {
+      _listeners.push(fn);
+      return function () {
+        _listeners = _listeners.filter(function (l) { return l !== fn; });
+      };
     },
 
     /**

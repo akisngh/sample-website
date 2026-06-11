@@ -16,6 +16,23 @@ function BridgeTest() {
     return () => clearTimeout(timer)
   }, [])
 
+  useEffect(() => {
+    const unsubscribe = Bridge.onResponse((response) => {
+      const time = new Date().toLocaleTimeString()
+      const json = JSON.stringify(response)
+
+      if (response.type === 'READ_KEY_RESPONSE') {
+        setKvValue(response.payload?.value ?? '')
+        setLog((prev) => [...prev, { action: 'Native → READ_KEY_RESPONSE', result: json, time, isResponse: true }])
+      } else if (response.type === 'WRITE_KEY_RESPONSE') {
+        setLog((prev) => [...prev, { action: 'Native → WRITE_KEY_RESPONSE', result: json, time, isResponse: true }])
+      } else {
+        setLog((prev) => [...prev, { action: 'Native → ' + response.type, result: json, time, isResponse: true }])
+      }
+    })
+    return unsubscribe
+  }, [])
+
   function addLog(action, result) {
     setLog((prev) => [...prev, { action, result, time: new Date().toLocaleTimeString() }])
   }
@@ -117,7 +134,7 @@ function BridgeTest() {
             <h3>Event Log</h3>
             <div className="bridge-log-entries">
               {log.map((entry, i) => (
-                <div className="bridge-log-entry" key={i}>
+                <div className={'bridge-log-entry' + (entry.isResponse ? ' native-response' : '')} key={i}>
                   <span className="log-time">{entry.time}</span>
                   <span className="log-action">{entry.action}</span>
                   <code className="log-result">{entry.result}</code>
