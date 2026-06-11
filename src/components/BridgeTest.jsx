@@ -17,20 +17,28 @@ function BridgeTest() {
   }, [])
 
   useEffect(() => {
-    const unsubscribe = Bridge.onResponse((response) => {
-      const time = new Date().toLocaleTimeString()
-      const json = JSON.stringify(response)
+    window.onNativeResponse = function (message) {
+      try {
+        const data = typeof message === 'string' ? JSON.parse(message) : message
+        const time = new Date().toLocaleTimeString()
+        const json = JSON.stringify(data)
 
-      if (response.type === 'READ_KEY_RESPONSE') {
-        setKvValue(response.payload?.value ?? '')
-        setLog((prev) => [...prev, { action: 'Native → READ_KEY_RESPONSE', result: json, time, isResponse: true }])
-      } else if (response.type === 'WRITE_KEY_RESPONSE') {
-        setLog((prev) => [...prev, { action: 'Native → WRITE_KEY_RESPONSE', result: json, time, isResponse: true }])
-      } else {
-        setLog((prev) => [...prev, { action: 'Native → ' + response.type, result: json, time, isResponse: true }])
+        if (data.type === 'READ_KEY_RESPONSE') {
+          const rawValue = data.payload?.value ?? ''
+          setKvValue(rawValue)
+          let parsedKv = null
+          try { parsedKv = JSON.parse(rawValue) } catch (_) {}
+          setLog((prev) => [...prev, { action: 'Native → READ_KEY_RESPONSE', result: json, time, isResponse: true, parsedKv }])
+        } else if (data.type === 'WRITE_KEY_RESPONSE') {
+          setLog((prev) => [...prev, { action: 'Native → WRITE_KEY_RESPONSE', result: json, time, isResponse: true }])
+        } else {
+          setLog((prev) => [...prev, { action: 'Native → ' + data.type, result: json, time, isResponse: true }])
+        }
+      } catch (e) {
+        console.error('[bridge] failed to handle native response:', e, message)
       }
-    })
-    return unsubscribe
+    }
+    return () => { window.onNativeResponse = undefined }
   }, [])
 
   function addLog(action, result) {
@@ -138,6 +146,16 @@ function BridgeTest() {
                   <span className="log-time">{entry.time}</span>
                   <span className="log-action">{entry.action}</span>
                   <code className="log-result">{entry.result}</code>
+                  {entry.parsedKv && typeof entry.parsedKv === 'object' && (
+                    <div className="log-kv-table">
+                      {Object.entries(entry.parsedKv).map(([k, v]) => (
+                        <div className="log-kv-row" key={k}>
+                          <span className="log-kv-key">{k}</span>
+                          <span className="log-kv-value">{String(v)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

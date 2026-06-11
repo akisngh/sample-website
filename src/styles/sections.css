@@ -739,6 +739,39 @@
   color: #16a34a;
 }
 
+.log-kv-table {
+  margin-top: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.log-kv-row {
+  display: flex;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.log-kv-row:last-child {
+  border-bottom: none;
+}
+
+.log-kv-key {
+  flex: 0 0 45%;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.log-kv-value {
+  flex: 1;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-family: var(--font-mono);
+  color: #7c3aed;
+}
+
 .log-time {
   font-size: 12px;
   color: var(--text-muted);

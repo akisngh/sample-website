@@ -120,12 +120,6 @@
     }
   }
 
-  /**
-   * Listeners for native -> web responses.
-   * Native calls: window.Bridge.onNativeResponse({ type: "...", payload: {...} })
-   */
-  var _listeners = [];
-
   var Bridge = {
     /** Expose the type constants for callers that want them. */
     Type: BridgeType,
@@ -199,36 +193,12 @@
     },
 
     /**
-     * Subscribe to native responses. Returns an unsubscribe function.
-     * @param {function} fn  Called with the parsed response object.
-     */
-    onResponse: function (fn) {
-      _listeners.push(fn);
-      return function () {
-        _listeners = _listeners.filter(function (l) { return l !== fn; });
-      };
-    },
-
-    /**
      * True when a native host (Android or iOS) is present.
      * Useful to branch dev-only behavior.
      */
     isNative: function () {
       return resolveTransport() !== null;
     },
-  };
-
-  /**
-   * Global callback for native -> web responses.
-   * Native calls: window.onNativeResponse(jsonString)
-   * via evaluateJavascript.
-   */
-  root.onNativeResponse = function (message) {
-    var parsed = typeof message === "string" ? JSON.parse(message) : message;
-    console.log("[bridge] native response:", parsed);
-    for (var i = 0; i < _listeners.length; i++) {
-      try { _listeners[i](parsed); } catch (e) { console.error("[bridge] listener error:", e); }
-    }
   };
 
   return Bridge;
