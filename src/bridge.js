@@ -199,20 +199,6 @@
     },
 
     /**
-     * Called by native via evaluateJavascript:
-     *   window.Bridge.onNativeResponse({"type":"READ_KEY_RESPONSE","payload":{...}})
-     *
-     * @param {object|string} response  The response object (or JSON string).
-     */
-    onNativeResponse: function (response) {
-      var parsed = typeof response === "string" ? JSON.parse(response) : response;
-      console.log("[bridge] native response:", parsed);
-      for (var i = 0; i < _listeners.length; i++) {
-        try { _listeners[i](parsed); } catch (e) { console.error("[bridge] listener error:", e); }
-      }
-    },
-
-    /**
      * Subscribe to native responses. Returns an unsubscribe function.
      * @param {function} fn  Called with the parsed response object.
      */
@@ -230,6 +216,19 @@
     isNative: function () {
       return resolveTransport() !== null;
     },
+  };
+
+  /**
+   * Global callback for native -> web responses.
+   * Native calls: window.onNativeResponse(jsonString)
+   * via evaluateJavascript.
+   */
+  root.onNativeResponse = function (message) {
+    var parsed = typeof message === "string" ? JSON.parse(message) : message;
+    console.log("[bridge] native response:", parsed);
+    for (var i = 0; i < _listeners.length; i++) {
+      try { _listeners[i](parsed); } catch (e) { console.error("[bridge] listener error:", e); }
+    }
   };
 
   return Bridge;
