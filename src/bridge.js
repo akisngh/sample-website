@@ -48,6 +48,8 @@
     INSTRUMENTATION: "INSTRUMENTATION",
     DEEP_LINK: "DEEP_LINK",
     RELOAD: "RELOAD",
+    READ_KEY: "READ_KEY",
+    WRITE_KEY: "WRITE_KEY",
   };
 
   /**
@@ -171,6 +173,23 @@
      */
     reload: function (url) {
       send(BridgeType.RELOAD, { url: url });
+    },
+
+    /**
+     * READ_KEY — ask native to read a stored key.
+     * @param {string} key  The key to read.
+     */
+    readKey: function (key) {
+      send(BridgeType.READ_KEY, { key: key });
+    },
+
+    /**
+     * WRITE_KEY — ask native to store a key-value pair.
+     * @param {string} key    The key to write.
+     * @param {string} value  The value to store.
+     */
+    writeKey: function (key, value) {
+      send(BridgeType.WRITE_KEY, { key: key, value: value });
     },
 
     /**

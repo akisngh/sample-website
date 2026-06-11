@@ -5,6 +5,8 @@ const Bridge = window.Bridge
 
 function BridgeTest() {
   const [log, setLog] = useState([])
+  const [kvKey, setKvKey] = useState('amit')
+  const [kvValue, setKvValue] = useState('')
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -54,6 +56,16 @@ function BridgeTest() {
     addLog('isNative()', String(result))
   }
 
+  function handleReadKey() {
+    Bridge.readKey(kvKey)
+    addLog('readKey("' + kvKey + '")', JSON.stringify({ type: 'READ_KEY', payload: { key: kvKey, value: kvValue } }))
+  }
+
+  function handleWriteKey() {
+    Bridge.writeKey(kvKey, kvValue)
+    addLog('writeKey("' + kvKey + '")', JSON.stringify({ type: 'WRITE_KEY', payload: { key: kvKey, value: kvValue } }))
+  }
+
   return (
     <section className="bridge-section">
       <div className="bridge-container">
@@ -68,6 +80,36 @@ function BridgeTest() {
           <button className="bridge-btn blue" onClick={handleDeepLink}>Deep Link</button>
           <button className="bridge-btn cyan" onClick={handleReload}>Reload</button>
           <button className="bridge-btn teal" onClick={handleCheckNative}>Check Native</button>
+        </div>
+
+        <div className="bridge-kv-section">
+          <h3>Key-Value Store</h3>
+          <div className="bridge-kv-inputs">
+            <label className="bridge-kv-label">
+              Key
+              <input
+                type="text"
+                className="bridge-kv-input"
+                value={kvKey}
+                onChange={(e) => setKvKey(e.target.value)}
+                placeholder="Enter key"
+              />
+            </label>
+            <label className="bridge-kv-label">
+              Value
+              <input
+                type="text"
+                className="bridge-kv-input"
+                value={kvValue}
+                onChange={(e) => setKvValue(e.target.value)}
+                placeholder="Enter value"
+              />
+            </label>
+          </div>
+          <div className="bridge-kv-buttons">
+            <button className="bridge-btn pink" onClick={handleWriteKey}>Write Key</button>
+            <button className="bridge-btn indigo" onClick={handleReadKey}>Read Key</button>
+          </div>
         </div>
 
         {log.length > 0 && (
