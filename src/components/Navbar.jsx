@@ -16,6 +16,26 @@ function Navbar({ page, setPage }) {
   return (
     <nav className="navbar">
       <div className="navbar-container">
+        <div className="navbar-nav-buttons">
+          <button
+            className="navbar-back"
+            onClick={() => window.history.back()}
+            aria-label="Go back"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <button
+            className="navbar-forward"
+            onClick={() => window.history.forward()}
+            aria-label="Go forward"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+        </div>
         <a href="#hero" className="navbar-logo" onClick={(e) => { e.preventDefault(); goHome(); }}>MPL Gaming</a>
         <button
           className="navbar-toggle"
