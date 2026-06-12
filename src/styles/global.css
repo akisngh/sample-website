@@ -29,6 +29,9 @@
 
 html {
   scroll-behavior: smooth;
+  height: 100%;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
 }
 
 body {
@@ -39,6 +42,9 @@ body {
   background: var(--bg-white);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-height: 100%;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
 }
 
 h1, h2, h3 {

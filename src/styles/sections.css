@@ -146,6 +146,7 @@
 /* ===== Hero ===== */
 .hero-section {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -588,6 +589,7 @@
 /* ===== Bridge Test Page ===== */
 .bridge-section {
   min-height: 100vh;
+  min-height: 100dvh;
   padding: 120px 24px 96px;
   display: flex;
   align-items: center;
@@ -830,6 +832,7 @@
 /* ===== Feature Page ===== */
 .feature-page {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
