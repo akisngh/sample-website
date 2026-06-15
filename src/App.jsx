@@ -60,7 +60,7 @@ function App() {
           <Footer />
         </>
       ) : page === 'bridge' ? (
-        <BridgeTest />
+        <BridgeTest onNavigate={navigateTo} />
       ) : page === 'tictactoe' ? (
         <TicTacToe />
       ) : page.startsWith('feature:') ? (

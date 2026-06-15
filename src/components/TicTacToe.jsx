@@ -51,12 +51,6 @@ function TicTacToe() {
   const [statusMsg, setStatusMsg] = useState('Your turn (X)')
   const [winLine, setWinLine] = useState(null)
 
-  // Signal game started on mount
-  useEffect(() => {
-    Bridge.gameStarted()
-    Bridge.instrumentation('game_started', { game: 'tic_tac_toe' })
-  }, [])
-
   // Bot plays after player
   useEffect(() => {
     if (!isPlayerTurn && !gameOver) {
@@ -196,6 +190,7 @@ function TicTacToe() {
           </button>
         </div>
       </div>
+
     </section>
   )
 }

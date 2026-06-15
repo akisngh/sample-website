@@ -3,15 +3,18 @@ import '../bridge.js'
 
 const Bridge = window.Bridge
 
-function BridgeTest() {
+function BridgeTest({ onNavigate }) {
   const [log, setLog] = useState([])
   const [kvKey, setKvKey] = useState('amit')
   const [kvValue, setKvValue] = useState('')
+  const [showHowToPlay, setShowHowToPlay] = useState(false)
 
   useEffect(() => {
     const timer = setTimeout(() => {
       Bridge.gameStarted()
       setLog((prev) => [...prev, { action: 'gameStarted() [auto]', result: '{"type":"GAME_STARTED"}', time: new Date().toLocaleTimeString() }])
+      setShowHowToPlay(true)
+      Bridge.instrumentation('how_to_play_opened', { game: 'tic_tac_toe' })
     }, 5000)
     return () => clearTimeout(timer)
   }, [])
@@ -48,6 +51,16 @@ function BridgeTest() {
   function handleGameStarted() {
     Bridge.gameStarted()
     addLog('gameStarted()', '{"type":"GAME_STARTED"}')
+    setShowHowToPlay(true)
+    Bridge.instrumentation('how_to_play_opened', { game: 'tic_tac_toe' })
+    addLog('how_to_play_opened', '{"type":"INSTRUMENTATION","payload":{"name":"how_to_play_opened"}}')
+  }
+
+  function handleHowToPlayClose() {
+    setShowHowToPlay(false)
+    Bridge.instrumentation('how_to_play_closed', { game: 'tic_tac_toe' })
+    addLog('how_to_play_closed', '{"type":"INSTRUMENTATION","payload":{"name":"how_to_play_closed"}}')
+    if (onNavigate) onNavigate('tictactoe')
   }
 
   function handleCloseGame() {
@@ -55,14 +68,21 @@ function BridgeTest() {
     addLog('closeGame()', '{"type":"CLOSE_GAME"}')
   }
 
-  function handleGameWon() {
-    Bridge.instrumentation('game_won', { amount: 10, isHof: true })
-    addLog('instrumentation("game_won")', '{"type":"INSTRUMENTATION","payload":{"name":"game_won","properties":{"amount":10,"isHof":true}}}')
-  }
 
-  function handleGameLost() {
-    Bridge.instrumentation('game_lost', { amount: 0, isHof: false })
-    addLog('instrumentation("game_lost")', '{"type":"INSTRUMENTATION","payload":{"name":"game_lost","properties":{"amount":0,"isHof":false}}}')
+  const randomEvents = [
+    { name: 'button_click', props: () => ({ button_id: 'btn_' + Math.floor(Math.random() * 100), screen: 'home' }) },
+    { name: 'page_view', props: () => ({ page: ['lobby', 'profile', 'wallet', 'leaderboard'][Math.floor(Math.random() * 4)], duration_ms: Math.floor(Math.random() * 5000) }) },
+    { name: 'purchase', props: () => ({ item: ['gems', 'coins', 'pass', 'ticket'][Math.floor(Math.random() * 4)], amount: Math.floor(Math.random() * 500) + 10, currency: 'INR' }) },
+    { name: 'level_complete', props: () => ({ level: Math.floor(Math.random() * 50) + 1, score: Math.floor(Math.random() * 10000), stars: Math.floor(Math.random() * 3) + 1 }) },
+    { name: 'error_occurred', props: () => ({ code: [400, 401, 403, 500, 502][Math.floor(Math.random() * 5)], endpoint: '/api/' + ['user', 'game', 'match', 'wallet'][Math.floor(Math.random() * 4)] }) },
+    { name: 'share_content', props: () => ({ method: ['whatsapp', 'copy_link', 'instagram', 'twitter'][Math.floor(Math.random() * 4)], content_type: 'score' }) },
+  ]
+
+  function handleInstrumentation() {
+    const event = randomEvents[Math.floor(Math.random() * randomEvents.length)]
+    const properties = event.props()
+    Bridge.instrumentation(event.name, properties)
+    addLog('instrumentation("' + event.name + '")', JSON.stringify({ type: 'INSTRUMENTATION', payload: { name: event.name, properties } }))
   }
 
   function handleDeepLink() {
@@ -100,8 +120,7 @@ function BridgeTest() {
         <div className="bridge-buttons">
           <button className="bridge-btn green" onClick={handleGameStarted}>Game Started</button>
           <button className="bridge-btn red" onClick={handleCloseGame}>Close Game</button>
-          <button className="bridge-btn purple" onClick={handleGameWon}>Game Won</button>
-          <button className="bridge-btn orange" onClick={handleGameLost}>Game Lost</button>
+          <button className="bridge-btn orange" onClick={handleInstrumentation}>Instrumentation</button>
           <button className="bridge-btn blue" onClick={handleDeepLink}>Deep Link</button>
           <button className="bridge-btn cyan" onClick={handleReload}>Reload</button>
           <button className="bridge-btn teal" onClick={handleCheckNative}>Check Native</button>
@@ -162,6 +181,37 @@ function BridgeTest() {
           </div>
         )}
       </div>
+
+      {showHowToPlay && (
+        <div className="htp-overlay">
+          <div className="htp-modal">
+            <h2>How to Play</h2>
+            <div className="htp-steps">
+              <div className="htp-step">
+                <span className="htp-step-num">1</span>
+                <p>You are <strong>X</strong>, the bot is <strong>O</strong>. You go first.</p>
+              </div>
+              <div className="htp-step">
+                <span className="htp-step-num">2</span>
+                <p>Tap any empty cell to place your mark.</p>
+              </div>
+              <div className="htp-step">
+                <span className="htp-step-num">3</span>
+                <p>Get <strong>3 in a row</strong> — horizontally, vertically, or diagonally — to win.</p>
+              </div>
+              <div className="htp-step">
+                <span className="htp-step-num">4</span>
+                <p>If all 9 cells are filled with no winner, it's a draw.</p>
+              </div>
+              <div className="htp-step">
+                <span className="htp-step-num">5</span>
+                <p>Your score and wins are tracked and sent to the app.</p>
+              </div>
+            </div>
+            <button className="bridge-btn purple" onClick={handleHowToPlayClose}>Got it, let's play!</button>
+          </div>
+        </div>
+      )}
     </section>
   )
 }
