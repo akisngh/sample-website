@@ -13,6 +13,11 @@ function Navbar({ page, setPage }) {
     setMenuOpen(false)
   }
 
+  function goTicTacToe() {
+    setPage('tictactoe')
+    setMenuOpen(false)
+  }
+
   return (
     <nav className="navbar">
       <div className="navbar-container">
@@ -60,6 +65,15 @@ function Navbar({ page, setPage }) {
               onClick={(e) => { e.preventDefault(); page === 'bridge' ? goHome() : goBridge(); }}
             >
               {page === 'bridge' ? 'Home' : 'Bridge'}
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              className={page === 'tictactoe' ? 'nav-active' : ''}
+              onClick={(e) => { e.preventDefault(); page === 'tictactoe' ? goHome() : goTicTacToe(); }}
+            >
+              {page === 'tictactoe' ? 'Home' : 'Tic Tac Toe'}
             </a>
           </li>
         </ul>

@@ -8,6 +8,7 @@ import Testimonials from './components/Testimonials'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
 import BridgeTest from './components/BridgeTest'
+import TicTacToe from './components/TicTacToe'
 import FeaturePage from './components/FeaturePage'
 
 const BASE = import.meta.env.BASE_URL
@@ -15,6 +16,7 @@ const BASE = import.meta.env.BASE_URL
 function pageToPath(page) {
   if (page === 'home') return BASE
   if (page === 'bridge') return BASE + 'bridge'
+  if (page === 'tictactoe') return BASE + 'tictactoe'
   if (page.startsWith('feature:')) return BASE + page.replace('feature:', '')
   return BASE
 }
@@ -23,6 +25,7 @@ function pathToPage(path) {
   const p = path.replace(BASE, '').replace(/\/$/, '')
   if (!p || p === '') return 'home'
   if (p === 'bridge') return 'bridge'
+  if (p === 'tictactoe') return 'tictactoe'
   return 'feature:' + p
 }
 
@@ -58,6 +61,8 @@ function App() {
         </>
       ) : page === 'bridge' ? (
         <BridgeTest />
+      ) : page === 'tictactoe' ? (
+        <TicTacToe />
       ) : page.startsWith('feature:') ? (
         <FeaturePage featureId={page.replace('feature:', '')} onBack={() => navigateTo('home')} />
       ) : null}
