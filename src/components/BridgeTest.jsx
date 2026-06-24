@@ -7,14 +7,12 @@ function BridgeTest({ onNavigate }) {
   const [log, setLog] = useState([])
   const [kvKey, setKvKey] = useState('amit')
   const [kvValue, setKvValue] = useState('')
-  const [showHowToPlay, setShowHowToPlay] = useState(false)
 
   useEffect(() => {
     const timer = setTimeout(() => {
       Bridge.gameStarted()
       setLog((prev) => [...prev, { action: 'gameStarted() [auto]', result: '{"type":"GAME_STARTED"}', time: new Date().toLocaleTimeString() }])
-      setShowHowToPlay(true)
-      Bridge.instrumentation('how_to_play_opened', { game: 'tic_tac_toe' })
+      if (onNavigate) onNavigate('tictactoe')
     }, 5000)
     return () => clearTimeout(timer)
   }, [])
@@ -51,15 +49,6 @@ function BridgeTest({ onNavigate }) {
   function handleGameStarted() {
     Bridge.gameStarted()
     addLog('gameStarted()', '{"type":"GAME_STARTED"}')
-    setShowHowToPlay(true)
-    Bridge.instrumentation('how_to_play_opened', { game: 'tic_tac_toe' })
-    addLog('how_to_play_opened', '{"type":"INSTRUMENTATION","payload":{"name":"how_to_play_opened"}}')
-  }
-
-  function handleHowToPlayClose() {
-    setShowHowToPlay(false)
-    Bridge.instrumentation('how_to_play_closed', { game: 'tic_tac_toe' })
-    addLog('how_to_play_closed', '{"type":"INSTRUMENTATION","payload":{"name":"how_to_play_closed"}}')
     if (onNavigate) onNavigate('tictactoe')
   }
 
@@ -182,36 +171,6 @@ function BridgeTest({ onNavigate }) {
         )}
       </div>
 
-      {showHowToPlay && (
-        <div className="htp-overlay">
-          <div className="htp-modal">
-            <h2>How to Play</h2>
-            <div className="htp-steps">
-              <div className="htp-step">
-                <span className="htp-step-num">1</span>
-                <p>You are <strong>X</strong>, the bot is <strong>O</strong>. You go first.</p>
-              </div>
-              <div className="htp-step">
-                <span className="htp-step-num">2</span>
-                <p>Tap any empty cell to place your mark.</p>
-              </div>
-              <div className="htp-step">
-                <span className="htp-step-num">3</span>
-                <p>Get <strong>3 in a row</strong> — horizontally, vertically, or diagonally — to win.</p>
-              </div>
-              <div className="htp-step">
-                <span className="htp-step-num">4</span>
-                <p>If all 9 cells are filled with no winner, it's a draw.</p>
-              </div>
-              <div className="htp-step">
-                <span className="htp-step-num">5</span>
-                <p>Your score and wins are tracked and sent to the app.</p>
-              </div>
-            </div>
-            <button className="bridge-btn purple" onClick={handleHowToPlayClose}>Got it, let's play!</button>
-          </div>
-        </div>
-      )}
     </section>
   )
 }
