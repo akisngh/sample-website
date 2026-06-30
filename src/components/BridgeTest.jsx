@@ -43,6 +43,12 @@ function BridgeTest({ onNavigate }) {
     if (onNavigate) onNavigate('tictactoe')
   }
 
+  function handleChickenRacing() {
+    Bridge.gameStarted()
+    addLog('gameStarted() → Chicken Racing', '{"type":"GAME_STARTED"}')
+    if (onNavigate) onNavigate('chickenracing')
+  }
+
   function handleCloseGame() {
     Bridge.closeGame()
     addLog('closeGame()', '{"type":"CLOSE_GAME"}')
@@ -98,7 +104,8 @@ function BridgeTest({ onNavigate }) {
         <p className="bridge-subtitle">Test native WebView communication</p>
 
         <div className="bridge-buttons">
-          <button className="bridge-btn green" onClick={handleGameStarted}>Game Started</button>
+          <button className="bridge-btn green" onClick={handleGameStarted}>Tic Tac Toe</button>
+          <button className="bridge-btn yellow" onClick={handleChickenRacing}>Chicken Racing</button>
           <button className="bridge-btn red" onClick={handleCloseGame}>Close Game</button>
           <button className="bridge-btn orange" onClick={handleInstrumentation}>Instrumentation</button>
           <button className="bridge-btn blue" onClick={handleDeepLink}>Deep Link</button>

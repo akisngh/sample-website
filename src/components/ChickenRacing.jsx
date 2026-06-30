@@ -53,6 +53,101 @@ const SFX = {
   },
 }
 
+// Background music — looping chiptune melody
+const BGM = {
+  nodes: null,
+  playing: false,
+
+  start() {
+    if (!audioCtx || this.playing) return
+    if (audioCtx.state === 'suspended') audioCtx.resume()
+    this.playing = true
+
+    // Melody notes (freq, duration in beats)
+    const melody = [
+      523, 523, 659, 659, 784, 784, 659, 0,
+      587, 587, 523, 523, 440, 440, 523, 0,
+      523, 659, 784, 1047, 784, 659, 523, 0,
+      587, 659, 587, 523, 440, 523, 440, 0,
+    ]
+    // Bass line
+    const bass = [
+      131, 131, 131, 131, 165, 165, 165, 165,
+      147, 147, 147, 147, 110, 110, 110, 110,
+      131, 131, 131, 131, 165, 165, 165, 165,
+      147, 147, 147, 147, 110, 110, 131, 131,
+    ]
+
+    const bpm = 180
+    const beatLen = 60 / bpm
+    const loopLen = melody.length * beatLen
+
+    const melodyGain = audioCtx.createGain()
+    melodyGain.gain.value = 0.07
+    melodyGain.connect(audioCtx.destination)
+
+    const bassGain = audioCtx.createGain()
+    bassGain.gain.value = 0.06
+    bassGain.connect(audioCtx.destination)
+
+    // Schedule notes in a loop
+    let startTime = audioCtx.currentTime + 0.05
+    const scheduledOscs = []
+
+    function scheduleLoop(offset) {
+      melody.forEach((freq, i) => {
+        if (freq === 0) return
+        const osc = audioCtx.createOscillator()
+        const env = audioCtx.createGain()
+        osc.type = 'square'
+        osc.frequency.value = freq
+        const noteStart = offset + i * beatLen
+        env.gain.setValueAtTime(0.07, noteStart)
+        env.gain.exponentialRampToValueAtTime(0.001, noteStart + beatLen * 0.8)
+        osc.connect(env)
+        env.connect(melodyGain)
+        osc.start(noteStart)
+        osc.stop(noteStart + beatLen * 0.9)
+        scheduledOscs.push(osc)
+      })
+
+      bass.forEach((freq, i) => {
+        const osc = audioCtx.createOscillator()
+        const env = audioCtx.createGain()
+        osc.type = 'triangle'
+        osc.frequency.value = freq
+        const noteStart = offset + i * beatLen
+        env.gain.setValueAtTime(0.06, noteStart)
+        env.gain.exponentialRampToValueAtTime(0.001, noteStart + beatLen * 0.9)
+        osc.connect(env)
+        env.connect(bassGain)
+        osc.start(noteStart)
+        osc.stop(noteStart + beatLen * 0.95)
+        scheduledOscs.push(osc)
+      })
+    }
+
+    // Schedule enough loops to cover the 10s race + buffer
+    for (let l = 0; l < 4; l++) {
+      scheduleLoop(startTime + l * loopLen)
+    }
+
+    this.nodes = { melodyGain, bassGain, oscs: scheduledOscs }
+  },
+
+  stop() {
+    if (!this.playing || !this.nodes) return
+    this.playing = false
+    const now = audioCtx.currentTime
+    this.nodes.melodyGain.gain.exponentialRampToValueAtTime(0.001, now + 0.3)
+    this.nodes.bassGain.gain.exponentialRampToValueAtTime(0.001, now + 0.3)
+    this.nodes.oscs.forEach(osc => {
+      try { osc.stop(now + 0.35) } catch (_) {}
+    })
+    this.nodes = null
+  },
+}
+
 function ChickenRacing() {
   const [gameState, setGameState] = useState('idle')
   const [countdown, setCountdown] = useState(null)
@@ -103,6 +198,7 @@ function ChickenRacing() {
       cancelAnimationFrame(rafRef.current)
       rafRef.current = null
     }
+    BGM.stop()
 
     const newScore = result === 'won'
       ? { ...score, wins: score.wins + 1 }
@@ -227,6 +323,7 @@ function ChickenRacing() {
         gameStateRef.current = 'playing'
 
         Bridge.gameStarted()
+        BGM.start()
         startGameLoop()
       }
     }, 600)
@@ -308,6 +405,7 @@ function ChickenRacing() {
   useEffect(() => {
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current)
+      BGM.stop()
     }
   }, [])
 
@@ -385,6 +483,7 @@ function ChickenRacing() {
     if (spawnIntervalRef.current && spawnIntervalRef.current.clear) {
       spawnIntervalRef.current.clear()
     }
+    BGM.stop()
 
     gameStateRef.current = 'idle'
     distanceRef.current = 0
@@ -406,6 +505,7 @@ function ChickenRacing() {
   }
 
   function handleExit() {
+    BGM.stop()
     if (rafRef.current) {
       cancelAnimationFrame(rafRef.current)
       rafRef.current = null

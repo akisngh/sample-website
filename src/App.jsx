@@ -55,7 +55,7 @@ function App() {
       {page === 'home' ? (
         <>
           <Hero />
-          <Features onNavigate={(id) => navigateTo('feature:' + id)} />
+          <Features onNavigate={(id) => navigateTo(id === 'chickenracing' ? 'chickenracing' : 'feature:' + id)} />
           <About />
           <Team />
           <Testimonials />
