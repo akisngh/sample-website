@@ -1180,7 +1180,7 @@
 .cr-chicken {
   position: absolute;
   bottom: 12%;
-  font-size: 40px;
+  font-size: 52px;
   transform: translateX(-50%);
   transition: left 0.15s ease;
   z-index: 2;
@@ -1309,7 +1309,7 @@
   }
 
   .cr-chicken {
-    font-size: 34px;
+    font-size: 44px;
   }
 
   .cr-obstacle {
