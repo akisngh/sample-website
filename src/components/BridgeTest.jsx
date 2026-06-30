@@ -9,15 +9,6 @@ function BridgeTest({ onNavigate }) {
   const [kvValue, setKvValue] = useState('')
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      Bridge.gameStarted()
-      setLog((prev) => [...prev, { action: 'gameStarted() [auto]', result: '{"type":"GAME_STARTED"}', time: new Date().toLocaleTimeString() }])
-      if (onNavigate) onNavigate('tictactoe')
-    }, 5000)
-    return () => clearTimeout(timer)
-  }, [])
-
-  useEffect(() => {
     window.onNativeResponse = function (message) {
       try {
         const data = typeof message === 'string' ? JSON.parse(message) : message
