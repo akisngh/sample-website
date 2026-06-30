@@ -13,6 +13,46 @@ const LANE_COUNT = 3
 const COUNTDOWN_STEPS = [3, 2, 1, 'GO!']
 const OBSTACLE_EMOJIS = ['🪨', '🚧', '🌾']
 
+// Sound effects using Web Audio API
+const audioCtx = typeof AudioContext !== 'undefined' ? new AudioContext() : null
+
+function playTone(freq, duration, type = 'square', volume = 0.15) {
+  if (!audioCtx) return
+  if (audioCtx.state === 'suspended') audioCtx.resume()
+  const osc = audioCtx.createOscillator()
+  const gain = audioCtx.createGain()
+  osc.type = type
+  osc.frequency.value = freq
+  gain.gain.setValueAtTime(volume, audioCtx.currentTime)
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration)
+  osc.connect(gain)
+  gain.connect(audioCtx.destination)
+  osc.start()
+  osc.stop(audioCtx.currentTime + duration)
+}
+
+const SFX = {
+  tap: () => playTone(800, 0.06, 'square', 0.08),
+  lane: () => playTone(500, 0.1, 'sine', 0.1),
+  hit: () => {
+    playTone(150, 0.3, 'sawtooth', 0.15)
+    setTimeout(() => playTone(100, 0.2, 'sawtooth', 0.1), 50)
+  },
+  beep: () => playTone(600, 0.15, 'square', 0.12),
+  go: () => playTone(1000, 0.25, 'square', 0.15),
+  win: () => {
+    playTone(523, 0.15, 'square', 0.12)
+    setTimeout(() => playTone(659, 0.15, 'square', 0.12), 120)
+    setTimeout(() => playTone(784, 0.15, 'square', 0.12), 240)
+    setTimeout(() => playTone(1047, 0.3, 'square', 0.15), 360)
+  },
+  lose: () => {
+    playTone(400, 0.2, 'sawtooth', 0.12)
+    setTimeout(() => playTone(300, 0.2, 'sawtooth', 0.12), 180)
+    setTimeout(() => playTone(200, 0.4, 'sawtooth', 0.1), 360)
+  },
+}
+
 function ChickenRacing() {
   const [gameState, setGameState] = useState('idle')
   const [countdown, setCountdown] = useState(null)
@@ -72,6 +112,9 @@ function ChickenRacing() {
     const msg = result === 'won' ? 'You Win!' : "Time's Up!"
     setStatusMsg(msg)
 
+    if (result === 'won') SFX.win()
+    else SFX.lose()
+
     sendResult(result === 'won' ? 'game_won' : 'game_lost', newScore)
   }, [score])
 
@@ -120,6 +163,7 @@ function ChickenRacing() {
             setStunned(true)
             speedRef.current = 0
             setStatusMsg('Ouch! Stunned!')
+            SFX.hit()
             setTimeout(() => {
               stunnedRef.current = false
               setStunned(false)
@@ -151,11 +195,14 @@ function ChickenRacing() {
 
     let step = 0
     setCountdown(COUNTDOWN_STEPS[step])
+    SFX.beep()
 
     const interval = setInterval(() => {
       step++
       if (step < COUNTDOWN_STEPS.length) {
         setCountdown(COUNTDOWN_STEPS[step])
+        if (COUNTDOWN_STEPS[step] === 'GO!') SFX.go()
+        else SFX.beep()
       } else {
         clearInterval(interval)
         setCountdown(null)
@@ -232,10 +279,12 @@ function ChickenRacing() {
           startCountdown()
         } else if (gameStateRef.current === 'playing' && !stunnedRef.current) {
           speedRef.current = Math.min(speedRef.current + TAP_BOOST, 8)
+          SFX.tap()
         }
       } else if (e.key === 'ArrowLeft') {
         e.preventDefault()
         if (gameStateRef.current === 'playing' && !stunnedRef.current) {
+          SFX.lane()
           const newLane = Math.max(0, laneRef.current - 1)
           laneRef.current = newLane
           setLane(newLane)
@@ -243,6 +292,7 @@ function ChickenRacing() {
       } else if (e.key === 'ArrowRight') {
         e.preventDefault()
         if (gameStateRef.current === 'playing' && !stunnedRef.current) {
+          SFX.lane()
           const newLane = Math.min(LANE_COUNT - 1, laneRef.current + 1)
           laneRef.current = newLane
           setLane(newLane)
@@ -269,6 +319,7 @@ function ChickenRacing() {
       startCountdown()
     } else if (gameStateRef.current === 'playing' && !stunnedRef.current) {
       speedRef.current = Math.min(speedRef.current + TAP_BOOST, 8)
+      SFX.tap()
     }
   }
 
@@ -281,6 +332,7 @@ function ChickenRacing() {
 
     if (Math.abs(dx) > 30 && Math.abs(dx) > Math.abs(dy)) {
       if (gameStateRef.current === 'playing' && !stunnedRef.current) {
+        SFX.lane()
         if (dx < 0) {
           const newLane = Math.max(0, laneRef.current - 1)
           laneRef.current = newLane
@@ -303,6 +355,7 @@ function ChickenRacing() {
     }
     if (gameStateRef.current === 'playing' && !stunnedRef.current) {
       speedRef.current = Math.min(speedRef.current + TAP_BOOST, 8)
+      SFX.tap()
 
       // Click left/right third of track to switch lanes
       const rect = trackRef.current?.getBoundingClientRect()
@@ -310,10 +363,12 @@ function ChickenRacing() {
         const x = e.clientX - rect.left
         const third = rect.width / 3
         if (x < third && laneRef.current > 0) {
+          SFX.lane()
           const newLane = laneRef.current - 1
           laneRef.current = newLane
           setLane(newLane)
         } else if (x > third * 2 && laneRef.current < LANE_COUNT - 1) {
+          SFX.lane()
           const newLane = laneRef.current + 1
           laneRef.current = newLane
           setLane(newLane)
