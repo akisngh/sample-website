@@ -22,7 +22,7 @@ function ChickenRacing() {
   const [lane, setLane] = useState(1)
   const [obstacles, setObstacles] = useState([])
   const [stunned, setStunned] = useState(false)
-  const [statusMsg, setStatusMsg] = useState('Tap to start!')
+  const [statusMsg, setStatusMsg] = useState('Ready? Tap to Start!')
 
   const gameStateRef = useRef('idle')
   const distanceRef = useRef(0)
@@ -69,7 +69,7 @@ function ChickenRacing() {
       : { ...score, losses: score.losses + 1 }
     setScore(newScore)
 
-    const msg = result === 'won' ? 'You made it! The chicken wins!' : 'Time\'s up! The chicken lost!'
+    const msg = result === 'won' ? 'You Win!' : "Time's Up!"
     setStatusMsg(msg)
 
     sendResult(result === 'won' ? 'game_won' : 'game_lost', newScore)
@@ -124,7 +124,7 @@ function ChickenRacing() {
               stunnedRef.current = false
               setStunned(false)
               if (gameStateRef.current === 'playing') {
-                setStatusMsg('Keep tapping!')
+                setStatusMsg('Tap to run! Swipe to dodge!')
               }
             }, STUN_DURATION)
             break
@@ -174,7 +174,7 @@ function ChickenRacing() {
         setObstacles([])
         setStunned(false)
         setTimeLeft(TIMER_DURATION)
-        setStatusMsg('Keep tapping!')
+        setStatusMsg('Tap to run! Swipe to dodge!')
 
         setGameState('playing')
         gameStateRef.current = 'playing'
@@ -235,14 +235,14 @@ function ChickenRacing() {
         }
       } else if (e.key === 'ArrowLeft') {
         e.preventDefault()
-        if (gameStateRef.current === 'playing') {
+        if (gameStateRef.current === 'playing' && !stunnedRef.current) {
           const newLane = Math.max(0, laneRef.current - 1)
           laneRef.current = newLane
           setLane(newLane)
         }
       } else if (e.key === 'ArrowRight') {
         e.preventDefault()
-        if (gameStateRef.current === 'playing') {
+        if (gameStateRef.current === 'playing' && !stunnedRef.current) {
           const newLane = Math.min(LANE_COUNT - 1, laneRef.current + 1)
           laneRef.current = newLane
           setLane(newLane)
@@ -280,7 +280,7 @@ function ChickenRacing() {
     const dy = touch.clientY - touchStartRef.current.y
 
     if (Math.abs(dx) > 30 && Math.abs(dx) > Math.abs(dy)) {
-      if (gameStateRef.current === 'playing') {
+      if (gameStateRef.current === 'playing' && !stunnedRef.current) {
         if (dx < 0) {
           const newLane = Math.max(0, laneRef.current - 1)
           laneRef.current = newLane
@@ -329,7 +329,7 @@ function ChickenRacing() {
     setLane(1)
     setObstacles([])
     setStunned(false)
-    setStatusMsg('Tap to start!')
+    setStatusMsg('Ready? Tap to Start!')
   }
 
   function handleExit() {
@@ -403,7 +403,7 @@ function ChickenRacing() {
           {(gameState === 'won' || gameState === 'lost') && (
             <div className={'cr-overlay cr-result-overlay ' + (gameState === 'won' ? 'cr-result-win' : 'cr-result-lose')}>
               <span className="cr-result-text">
-                {gameState === 'won' ? 'You Win!' : 'You Lose!'}
+                {gameState === 'won' ? 'You Win!' : "Time's Up!"}
               </span>
             </div>
           )}
