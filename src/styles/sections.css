@@ -1209,7 +1209,7 @@
 
 .cr-obstacle {
   position: absolute;
-  font-size: 32px;
+  font-size: 44px;
   transform: translateX(-50%);
   z-index: 1;
   filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.25));
@@ -1313,6 +1313,6 @@
   }
 
   .cr-obstacle {
-    font-size: 28px;
+    font-size: 38px;
   }
 }
