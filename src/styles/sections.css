@@ -1032,3 +1032,287 @@
     font-size: 24px;
   }
 }
+
+/* ===== Chicken Racing ===== */
+.cr-section {
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 80px 24px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-light);
+}
+
+.cr-container {
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+.cr-container h1 {
+  font-size: 36px;
+  margin-bottom: 4px;
+}
+
+.cr-subtitle {
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.cr-scoreboard {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.cr-score-item {
+  flex: 1;
+  padding: 12px 8px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cr-score-wins {
+  background: linear-gradient(135deg, #7c3aed, #9333ea);
+  color: white;
+}
+
+.cr-score-losses {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+}
+
+.cr-score-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.85;
+}
+
+.cr-score-value {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.cr-hud {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.cr-timer {
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--purple);
+  min-width: 60px;
+  text-align: left;
+}
+
+.cr-timer-urgent {
+  color: #ef4444;
+  animation: cr-pulse 0.5s ease infinite;
+}
+
+@keyframes cr-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.cr-progress-bar {
+  flex: 1;
+  height: 14px;
+  background: #e5e7eb;
+  border-radius: 7px;
+  overflow: hidden;
+}
+
+.cr-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--purple), #ec4899);
+  border-radius: 7px;
+  transition: width 0.1s linear;
+}
+
+.cr-track {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 5;
+  background: linear-gradient(180deg, #2d5a27 0%, #3a7233 50%, #2d5a27 100%);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: pan-y;
+}
+
+.cr-lane-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.4) 0px,
+    rgba(255, 255, 255, 0.4) 20px,
+    transparent 20px,
+    transparent 40px
+  );
+}
+
+.cr-lane-divider-1 {
+  left: 33.33%;
+}
+
+.cr-lane-divider-2 {
+  left: 66.66%;
+}
+
+.cr-chicken {
+  position: absolute;
+  bottom: 12%;
+  font-size: 40px;
+  transform: translateX(-50%);
+  transition: left 0.15s ease;
+  z-index: 2;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.cr-chicken-running {
+  animation: cr-bounce 0.2s ease infinite;
+}
+
+.cr-chicken-stunned {
+  animation: cr-shake 0.1s ease infinite;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3)) brightness(0.6) sepia(1) hue-rotate(-30deg) saturate(3);
+}
+
+@keyframes cr-bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-6px); }
+}
+
+@keyframes cr-shake {
+  0%, 100% { transform: translateX(-50%) translateX(0); }
+  25% { transform: translateX(-50%) translateX(-4px); }
+  75% { transform: translateX(-50%) translateX(4px); }
+}
+
+.cr-obstacle {
+  position: absolute;
+  font-size: 32px;
+  transform: translateX(-50%);
+  z-index: 1;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.25));
+}
+
+.cr-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.cr-countdown-overlay {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.cr-countdown-text {
+  font-size: 80px;
+  font-weight: 800;
+  color: white;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  animation: cr-scale-in 0.4s ease;
+}
+
+@keyframes cr-scale-in {
+  0% { transform: scale(2); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.cr-idle-overlay {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.cr-idle-text {
+  font-size: 24px;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.cr-result-overlay {
+  animation: cr-scale-in 0.4s ease;
+}
+
+.cr-result-win {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.cr-result-lose {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.cr-result-text {
+  font-size: 36px;
+  font-weight: 800;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.cr-result-win .cr-result-text {
+  color: #fbbf24;
+}
+
+.cr-result-lose .cr-result-text {
+  color: #ef4444;
+}
+
+.cr-status {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--purple);
+  min-height: 24px;
+}
+
+.cr-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.cr-actions .bridge-btn {
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .cr-section {
+    padding: 70px 16px 32px;
+  }
+
+  .cr-container h1 {
+    font-size: 28px;
+  }
+
+  .cr-score-value {
+    font-size: 24px;
+  }
+
+  .cr-chicken {
+    font-size: 34px;
+  }
+
+  .cr-obstacle {
+    font-size: 28px;
+  }
+}
