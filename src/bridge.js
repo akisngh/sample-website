@@ -28,6 +28,67 @@
  * Usage (script tag, no bundler):
  *   <script src="bridge.js"></script>
  *   <script> window.Bridge.gameStarted(); </script>
+ *
+ * ----------------------------- All Methods ----------------------------------
+ *
+ * 1. Bridge.gameStarted()
+ *    Signal that the game UI is ready.
+ *    Sends: { "type": "GAME_STARTED" }
+ *    Example:
+ *      Bridge.gameStarted();
+ *
+ * 2. Bridge.closeGame()
+ *    Ask native to tear down the WebView.
+ *    Sends: { "type": "CLOSE_GAME" }
+ *    Example:
+ *      Bridge.closeGame();
+ *
+ * 3. Bridge.instrumentation(name, properties)
+ *    Send an analytics/instrumentation event to native.
+ *    Sends: { "type": "INSTRUMENTATION", "payload": { "name": "...", "properties": {...} } }
+ *    Example:
+ *      Bridge.instrumentation("game_won", { amount: 10, isHof: true });
+ *      Bridge.instrumentation("button_click", { button_id: "play", screen: "lobby" });
+ *
+ * 4. Bridge.deepLink(route, params)
+ *    Ask native to open a deep link / navigate to a native screen.
+ *    Sends: { "type": "DEEP_LINK", "payload": { "action": "OPEN_DEEP_LINK", "actionParams": { "actionType": "nav", "actionPayload": { "route": "...", "param": {...} } } } }
+ *    Example:
+ *      Bridge.deepLink("AddMoney", {});
+ *      Bridge.deepLink("RummyGameList", { tab: "cash" });
+ *
+ * 5. Bridge.reload(url)
+ *    Ask native to reload the WebView with a new URL.
+ *    Sends: { "type": "RELOAD", "payload": { "url": "..." } }
+ *    Example:
+ *      Bridge.reload("https://example.com/game");
+ *
+ * 6. Bridge.readKey(key)
+ *    Ask native to read a stored key. Response arrives via window.onNativeResponse.
+ *    Keys are automatically prefixed with "web_game_" before sending to native.
+ *    Sends: { "type": "READ_KEY", "payload": { "key": "web_game_<key>" } }
+ *    Example:
+ *      Bridge.readKey("user_preferences");
+ *      // Sends key as "web_game_user_preferences"
+ *
+ * 7. Bridge.writeKey(key, value)
+ *    Ask native to store a key-value pair.
+ *    Keys are automatically prefixed with "web_game_" before sending to native.
+ *    Sends: { "type": "WRITE_KEY", "payload": { "key": "web_game_<key>", "value": "..." } }
+ *    Example:
+ *      Bridge.writeKey("user_preferences", JSON.stringify({ theme: "dark" }));
+ *      // Sends key as "web_game_user_preferences"
+ *
+ * 8. Bridge.isNative()
+ *    Check if a native host (Android/iOS) is present. Returns boolean.
+ *    Example:
+ *      if (Bridge.isNative()) { console.log("Running inside WebView"); }
+ *
+ * 9. Bridge.send(type, payload)
+ *    Low-level escape hatch to send a custom message type.
+ *    Example:
+ *      Bridge.send("CUSTOM_EVENT", { foo: "bar" });
+ *
  * ---------------------------------------------------------------------------
  */
 (function (root, factory) {
@@ -177,19 +238,21 @@
 
     /**
      * READ_KEY — ask native to read a stored key.
-     * @param {string} key  The key to read.
+     * Keys are automatically prefixed with "web_game_".
+     * @param {string} key  The key to read (without prefix).
      */
     readKey: function (key) {
-      send(BridgeType.READ_KEY, { key: key });
+      send(BridgeType.READ_KEY, { key: "web_game_" + key });
     },
 
     /**
      * WRITE_KEY — ask native to store a key-value pair.
-     * @param {string} key    The key to write.
+     * Keys are automatically prefixed with "web_game_".
+     * @param {string} key    The key to write (without prefix).
      * @param {string} value  The value to store.
      */
     writeKey: function (key, value) {
-      send(BridgeType.WRITE_KEY, { key: key, value: value });
+      send(BridgeType.WRITE_KEY, { key: "web_game_" + key, value: value });
     },
 
     /**
