@@ -296,11 +296,29 @@ function ChickenRacing() {
     touchStartRef.current = null
   }
 
-  function handleClick() {
+  function handleClick(e) {
     if (gameStateRef.current === 'idle') {
       startCountdown()
-    } else if (gameStateRef.current === 'playing' && !stunnedRef.current) {
+      return
+    }
+    if (gameStateRef.current === 'playing' && !stunnedRef.current) {
       speedRef.current = Math.min(speedRef.current + TAP_BOOST, 8)
+
+      // Click left/right third of track to switch lanes
+      const rect = trackRef.current?.getBoundingClientRect()
+      if (rect) {
+        const x = e.clientX - rect.left
+        const third = rect.width / 3
+        if (x < third && laneRef.current > 0) {
+          const newLane = laneRef.current - 1
+          laneRef.current = newLane
+          setLane(newLane)
+        } else if (x > third * 2 && laneRef.current < LANE_COUNT - 1) {
+          const newLane = laneRef.current + 1
+          laneRef.current = newLane
+          setLane(newLane)
+        }
+      }
     }
   }
 
