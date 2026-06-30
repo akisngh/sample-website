@@ -23,6 +23,12 @@ const features = [
     title: 'Rewards',
     description: 'Earn points, unlock achievements, and redeem exclusive rewards.',
   },
+  {
+    id: 'chickenracing',
+    emoji: '\u{1F414}',
+    title: 'Chicken Racing',
+    description: 'Tap to race your chicken and dodge obstacles before time runs out!',
+  },
 ]
 
 function Features({ onNavigate }) {
